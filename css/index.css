@@ -83,3 +83,42 @@ footer {
 .counter {
     font-weight: 500;
 }
+
+#theme {
+    cursor: pointer;
+}
+
+/* DARK THEME */
+
+body.dark {
+    color: #edebe8;
+    background-color: #123a4e;
+}
+
+.dark header {
+    background-color: #328037;
+}
+
+.dark footer {
+    background-color: #4a5e66;
+}
+
+.dark .button {
+    background-color: #ac1917;
+    border-color: #941411;
+    box-shadow: #50565a 0px 9px;
+}
+
+.dark .button:hover {
+    background-color: #a0201e;
+}
+
+.dark .button:active {
+    background-color: #9c211e;
+    box-shadow: 0 5px #666;
+    transform: translateY(4px);
+}
+
+.dark a {
+    color: #409cff;
+}
