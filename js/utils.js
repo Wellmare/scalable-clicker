@@ -1,7 +1,7 @@
-const getDataFromLocalStorage = (key) => {
-    return JSON.parse(localStorage.getItem(key))
+const getDataFromLocalStorage = async (key) => {
+    return await JSON.parse(localStorage.getItem(key))
 }
 
-const setDataToLocalStorage = (key, value) => {
-    localStorage.setItem(key, JSON.stringify(value))
+const setDataToLocalStorage = async (key, value) => {
+    await localStorage.setItem(key, JSON.stringify(value))
 }

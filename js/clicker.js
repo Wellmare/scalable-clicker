@@ -14,31 +14,31 @@ class Clicker {
         this.changeTheme = changeThemeEl
     }
 
-    setCount = (count) => {
+    setCount = async (count) => {
         if (!isNaN(count) && count >= 0) {
             this.#clicks = count
             this.counter.textContent = count
-            setDataToLocalStorage('clicks', count)
+            await setDataToLocalStorage('clicks', count)
         }
     }
-    addCount = (count) => {
-        this.setCount(this.#clicks + count)
+    addCount = async (count) => {
+        await this.setCount(this.#clicks + count)
     }
     startGame = async () => {
-        const prevCount = await +getDataFromLocalStorage('clicks')
+        const prevCount = await getDataFromLocalStorage('clicks')
         this.isDarktheme = await getDataFromLocalStorage('darkTheme')
 
         this.toggleTheme(this.isDarktheme)
 
-        this.setCount(prevCount)
-        this.button.addEventListener('click', (e) => {
+        await this.setCount(+prevCount)
+        this.button.addEventListener('click', async (e) => {
             e.preventDefault()
-            this.addCount(this.#clickSize)
+            await this.addCount(this.#clickSize)
         })
 
-        this.changeTheme.addEventListener('click', () => {
+        this.changeTheme.addEventListener('click', async () => {
             this.isDarktheme = !this.isDarktheme
-            setDataToLocalStorage('darkTheme', this.isDarktheme)
+            await setDataToLocalStorage('darkTheme', this.isDarktheme)
             this.toggleTheme(this.isDarktheme)
         })
     }
