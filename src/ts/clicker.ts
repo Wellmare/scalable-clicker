@@ -1,25 +1,16 @@
-interface IUpgrades {
-    clicksPerSecond: number
-    clickSize: number
-
-    multiplier: number
-}
+// interface IUpgrades {
+//     clicksPerSecond: number
+//     clickSize: number
+// }
 
 class Clicker {
     private clicks: number = 0
-    private clickSize: number = 1
+    // private clickSize: number = 1
 
     private upgrades: IUpgrades = {
         clickSize: 1,
         clicksPerSecond: 0,
-        multiplier: 1,
     }
-
-    private defaultPrices = {
-        perClick: 10,
-        perSec: 50,
-    }
-    private multuplierPrice = 1.5
 
     private isDarkTheme: boolean = false
 
@@ -32,13 +23,13 @@ class Clicker {
 
     private setCount = (count: number): void => {
         if (!isNaN(count) && count >= 0) {
-            this.clicks = count
-            this.counter.textContent = count.toString()
-            setDataToLocalStorage('clicks', count)
+            this.clicks = Math.floor(count)
+            this.counter.textContent = String(Math.floor(count))
+            setDataToLocalStorage('clicks', Math.floor(count))
         }
     }
 
-    private addCount = (count: number): void => {
+    private addCount = (count: number = this.upgrades.clickSize): void => {
         this.setCount(this.clicks + count)
     }
 
@@ -47,7 +38,7 @@ class Clicker {
 
         this.button.addEventListener('click', (e) => {
             e.preventDefault()
-            this.addCount(this.clickSize)
+            this.addCount()
         })
         this.changeTheme.addEventListener('click', () => {
             this.isDarkTheme = !this.isDarkTheme
@@ -65,35 +56,22 @@ class Clicker {
 
         //     }
         // }
-
-        document
-            .querySelector(`${this.upgradeBlocksSelectors.perClick} button`)
-            ?.addEventListener('click', this.upgradePerClick)
-        document
-            .querySelector(`${this.upgradeBlocksSelectors.perSec} button`)
-            ?.addEventListener('click', this.upgradePerSec)
     }
 
     private returnSetting = () => {
         const prevCount = getDataFromLocalStorage(LocalStorage.clicks)
         this.isDarkTheme = getDataFromLocalStorage(LocalStorage.isDarkTheme)
 
+        this.upgrades = getDataFromLocalStorage('upgrades') || this.upgrades
+
         this.toggleTheme(this.isDarkTheme)
         this.setCount(+prevCount || 0)
 
-        const perClickBlock = document.getElementById(
-            this.upgradeBlocksSelectors.perClick
-        ) as HTMLElement
-        const perSecBlock = document.getElementById(
-            this.upgradeBlocksSelectors.perSec
-        ) as HTMLElement
+        setInterval(() => {
+            this.addCount(this.upgrades.clicksPerSecond)
+        }, 1000)
 
-        ;(perClickBlock.querySelector('.price') as HTMLElement).textContent = (
-            this.defaultPrices.perClick * this.upgrades.multiplier
-        ).toString()
-        ;(perSecBlock.querySelector('.price') as HTMLElement).textContent = (
-            this.defaultPrices.perSec * this.upgrades.multiplier
-        ).toString()
+        new Upgrades(this.decreasePrice, this.upgrades, this.getClicks).start()
     }
 
     private toggleTheme = (isDarkTheme: boolean = false): void => {
@@ -102,12 +80,9 @@ class Clicker {
             : document.body.classList.remove('dark')
     }
 
-    private upgradePerClick = (): void => {
-        this.upgrades.clickSize++
-        this.upgrades.multiplier *= this.multuplierPrice
+    private decreasePrice = (count: number) => {
+        this.setCount(this.clicks - Math.floor(count))
     }
-    private upgradePerSec = (): void => {
-        this.upgrades.clicksPerSecond++
-        this.upgrades.multiplier *= this.multuplierPrice
-    }
+
+    private getClicks = (): number => this.clicks
 }

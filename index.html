@@ -38,6 +38,16 @@
             <main>
                 <div class="wrapper">
                     <p>Кликов: <span class="counter" id="counter">0</span></p>
+                    <div style="display: flex; justify-content: space-around; font-size: 1.5rem;">
+                        <span>
+                            Кликов за клик:
+                            <span class="counter" id="counterPerClick">0</span>
+                        </span>
+                        <span>
+                            Клики за секунду:
+                            <span class="counter" id="counterPerSec">0</span>
+                        </span>
+                    </div>
                     <button class="button" id="button">КЛИК</button>
                 </div>
 
@@ -66,6 +76,7 @@
     </body>
 
     <script src="./dist/js/utils.js"></script>
+    <script src="./dist/js/upgrades.js"></script>
     <script src="./dist/js/clicker.js"></script>
     <script src="./dist/js/index.js"></script>
 </html>

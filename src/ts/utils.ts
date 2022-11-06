@@ -9,4 +9,10 @@ const setDataToLocalStorage = (key: string, value: any): void => {
 enum LocalStorage {
     clicks = 'clicks',
     isDarkTheme = 'isDarkTheme',
+    multipliers = 'multipliers',
+    upgrades = 'upgrades',
+}
+
+const getElementBySelector = (selector: string) => {
+    return document.querySelector(selector) as HTMLElement
 }

@@ -9,4 +9,9 @@ var LocalStorage;
 (function (LocalStorage) {
     LocalStorage["clicks"] = "clicks";
     LocalStorage["isDarkTheme"] = "isDarkTheme";
+    LocalStorage["multipliers"] = "multipliers";
+    LocalStorage["upgrades"] = "upgrades";
 })(LocalStorage || (LocalStorage = {}));
+const getElementBySelector = (selector) => {
+    return document.querySelector(selector);
+};
