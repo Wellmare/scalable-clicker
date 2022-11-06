@@ -8,8 +8,8 @@ const setDataToLocalStorage = (key: string, value: any): void => {
 
 enum LocalStorage {
     clicks = 'clicks',
-    isDarkTheme = 'isDarkTheme',
-    multipliers = 'multipliers',
+    theme = 'theme',
+    multiplierPrice = 'multiplierPrice',
     upgrades = 'upgrades',
 }
 

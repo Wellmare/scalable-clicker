@@ -1,37 +1,11 @@
-// interface IUpgrades {
-//     clicksPerSecond: number
-//     clickSize: number
-// }
-
 class Clicker {
     private clicks: number = 0
-    // private clickSize: number = 1
-
     private upgrades: IUpgrades = {
         clickSize: 1,
         clicksPerSecond: 0,
     }
 
-    private isDarkTheme: boolean = false
-
-    constructor(
-        public counter: HTMLElement,
-        public button: HTMLElement,
-        public changeTheme: HTMLElement,
-        public upgradeBlocksSelectors: { perClick: string; perSec: string }
-    ) {}
-
-    private setCount = (count: number): void => {
-        if (!isNaN(count) && count >= 0) {
-            this.clicks = Math.floor(count)
-            this.counter.textContent = String(Math.floor(count))
-            setDataToLocalStorage('clicks', Math.floor(count))
-        }
-    }
-
-    private addCount = (count: number = this.upgrades.clickSize): void => {
-        this.setCount(this.clicks + count)
-    }
+    constructor(public counter: HTMLElement, public button: HTMLElement) {}
 
     public startGame = (): void => {
         this.returnSetting()
@@ -40,11 +14,9 @@ class Clicker {
             e.preventDefault()
             this.addCount()
         })
-        this.changeTheme.addEventListener('click', () => {
-            this.isDarkTheme = !this.isDarkTheme
-            setDataToLocalStorage(LocalStorage.isDarkTheme, this.isDarkTheme)
-            this.toggleTheme(this.isDarkTheme)
-        })
+
+        new Theme(getElementBySelector('#theme'))
+        new Upgrades(this.decreasePrice, this.getClicks, this.upgrades).start()
 
         // enum typesUpgrades {
         //     perClick,
@@ -58,31 +30,33 @@ class Clicker {
         // }
     }
 
+    private setCount = (count: number): void => {
+        const flooredCount = Math.floor(count)
+
+        if (!isNaN(count) && count >= 0) {
+            this.clicks = flooredCount
+            this.counter.textContent = String(flooredCount)
+            setDataToLocalStorage('clicks', flooredCount)
+        }
+    }
+
+    private addCount = (count: number = this.upgrades.clickSize): void => {
+        this.setCount(this.clicks + count)
+    }
+
+    private getClicks = (): number => this.clicks
+
     private returnSetting = () => {
         const prevCount = getDataFromLocalStorage(LocalStorage.clicks)
-        this.isDarkTheme = getDataFromLocalStorage(LocalStorage.isDarkTheme)
-
-        this.upgrades = getDataFromLocalStorage('upgrades') || this.upgrades
-
-        this.toggleTheme(this.isDarkTheme)
         this.setCount(+prevCount || 0)
 
+        this.upgrades = getDataFromLocalStorage('upgrades') || this.upgrades
         setInterval(() => {
             this.addCount(this.upgrades.clicksPerSecond)
         }, 1000)
-
-        new Upgrades(this.decreasePrice, this.upgrades, this.getClicks).start()
-    }
-
-    private toggleTheme = (isDarkTheme: boolean = false): void => {
-        isDarkTheme
-            ? document.body.classList.add('dark')
-            : document.body.classList.remove('dark')
     }
 
     private decreasePrice = (count: number) => {
         this.setCount(this.clicks - Math.floor(count))
     }
-
-    private getClicks = (): number => this.clicks
 }

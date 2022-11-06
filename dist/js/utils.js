@@ -8,8 +8,8 @@ const setDataToLocalStorage = (key, value) => {
 var LocalStorage;
 (function (LocalStorage) {
     LocalStorage["clicks"] = "clicks";
-    LocalStorage["isDarkTheme"] = "isDarkTheme";
-    LocalStorage["multipliers"] = "multipliers";
+    LocalStorage["theme"] = "theme";
+    LocalStorage["multiplierPrice"] = "multiplierPrice";
     LocalStorage["upgrades"] = "upgrades";
 })(LocalStorage || (LocalStorage = {}));
 const getElementBySelector = (selector) => {

@@ -4,61 +4,106 @@ var selectors;
     selectors["perSec"] = "#per-sec";
     selectors["perClick"] = "#per-click";
 })(selectors || (selectors = {}));
+var typesUpgrades;
+(function (typesUpgrades) {
+    typesUpgrades["perClick"] = "perClick";
+    typesUpgrades["perSec"] = "perSec";
+})(typesUpgrades || (typesUpgrades = {}));
 const PRICE_INCREASE = 1.75;
 const defaultPrices = {
     perClick: 10,
     perSec: 50,
 };
 class Upgrades {
-    constructor(decreasePrice, upgrades, getClicks) {
-        this.multiplierPricePerClick = 1;
-        this.multiplierPricePerSec = 1;
-        // public start = (multiplierPrice: number) => {
+    constructor(decreasePrice, getClicks, upgrades) {
+        this.decreasePrice = decreasePrice;
+        this.getClicks = getClicks;
+        this.multiplierPrice = {
+            perClick: 1,
+            perSec: 1,
+        };
         this.start = () => {
-            const { multiplierPricePerClick, multiplierPricePerSec } = getDataFromLocalStorage(LocalStorage.multipliers);
-            this.multiplierPricePerClick = +multiplierPricePerClick;
-            this.multiplierPricePerSec = +multiplierPricePerSec;
+            this.setMultiplierPriceFromLS();
             this.showPrices();
-            getElementBySelector(`${selectors.perClick} button`).addEventListener('click', () => this.upgradeClickSize(1));
-            getElementBySelector(`${selectors.perSec} button`).addEventListener('click', () => this.upgradeClicksPerSec(1));
+            const listenEventButton = (selector, funcOnClick) => {
+                getElementBySelector(`${selector} button`).addEventListener('click', funcOnClick);
+            };
+            listenEventButton(selectors.perClick, () => this.upgrade(typesUpgrades.perClick, 1));
+            listenEventButton(selectors.perSec, () => this.upgrade(typesUpgrades.perSec, 1));
             this.renderUpgrades();
         };
         this.showPrices = () => {
-            getElementBySelector(`${selectors.perClick} .price`).textContent =
-                String(Math.floor(defaultPrices.perClick * this.multiplierPricePerClick));
-            getElementBySelector(`${selectors.perSec} .price`).textContent = String(Math.floor(defaultPrices.perSec * this.multiplierPricePerSec));
+            const showPrice = (selector, price) => {
+                getElementBySelector(`${selector} .price`).textContent = String(Math.floor(price));
+            };
+            showPrice(selectors.perClick, defaultPrices.perClick * this.multiplierPrice.perClick);
+            showPrice(selectors.perSec, defaultPrices.perSec * this.multiplierPrice.perSec);
         };
-        this.upgradeClickSize = (count = 1) => {
-            const totalPrice = Math.floor(defaultPrices.perClick * this.multiplierPricePerClick);
-            console.log(totalPrice);
-            if (this.getClicks() >= totalPrice) {
-                this.decreasePrice(defaultPrices.perClick * this.multiplierPricePerClick);
-                this.upgrades.clickSize += count;
-                this.multiplierPricePerClick *= PRICE_INCREASE;
-                this.showPrices();
-                this.renderUpgrades();
-                setDataToLocalStorage(LocalStorage.upgrades, this.upgrades);
-                setDataToLocalStorage(LocalStorage.multipliers, {
-                    multiplierPricePerClick: Math.floor(this.multiplierPricePerClick),
-                    multiplierPricePerSec: Math.floor(this.multiplierPricePerSec),
-                });
-            }
-            else {
-                alert('Недостаточно кликов для покупки');
-            }
-        };
-        this.upgradeClicksPerSec = (count = 1) => {
-            const totalPrice = Math.floor(defaultPrices.perSec * this.multiplierPricePerSec);
+        // private upgradeClickSize = (count: number = 1) => {
+        //     const totalPrice: number = Math.floor(
+        //         defaultPrices.perClick * this.multiplierPricePerClick
+        //     )
+        //     console.log(totalPrice)
+        //     if (this.getClicks() >= totalPrice) {
+        //         this.decreasePrice(
+        //             defaultPrices.perClick * this.multiplierPricePerClick
+        //         )
+        //         this.upgrades.clickSize += count
+        //         this.multiplierPricePerClick *= PRICE_INCREASE
+        //         this.showPrices()
+        //         this.renderUpgrades()
+        //         setDataToLocalStorage(LocalStorage.upgrades, this.upgrades)
+        //         setDataToLocalStorage(LocalStorage.multipliers, {
+        //             multiplierPricePerClick: Math.floor(
+        //                 this.multiplierPricePerClick
+        //             ),
+        //             multiplierPricePerSec: Math.floor(this.multiplierPricePerSec),
+        //         })
+        //     } else {
+        //         alert('Недостаточно кликов для покупки')
+        //     }
+        // }
+        // private upgradeClicksPerSec = (count: number = 1) => {
+        //     const totalPrice: number = Math.floor(
+        //         defaultPrices.perSec * this.multiplierPricePerSec
+        //     )
+        //     if (this.getClicks() >= totalPrice) {
+        //         this.decreasePrice(totalPrice)
+        //         this.upgrades.clicksPerSecond += count
+        //         this.multiplierPricePerSec *= PRICE_INCREASE
+        //         this.showPrices()
+        //         this.renderUpgrades()
+        //         setDataToLocalStorage(LocalStorage.upgrades, this.upgrades)
+        //         setDataToLocalStorage(LocalStorage.multipliers, {
+        //             multiplierPricePerClick: Math.floor(
+        //                 this.multiplierPricePerClick
+        //             ),
+        //             multiplierPricePerSec: Math.floor(this.multiplierPricePerSec),
+        //         })
+        //     } else {
+        //         alert('Недостаточно кликов для покупки')
+        //     }
+        // }
+        this.upgrade = (type, count) => {
+            const totalPrice = Math.floor(type === typesUpgrades.perClick
+                ? defaultPrices.perClick * this.multiplierPrice.perClick
+                : defaultPrices.perSec * this.multiplierPrice.perSec);
             if (this.getClicks() >= totalPrice) {
                 this.decreasePrice(totalPrice);
-                this.upgrades.clicksPerSecond += count;
-                this.multiplierPricePerSec *= PRICE_INCREASE;
+                if (type === typesUpgrades.perClick) {
+                    this.upgrades.clickSize += count;
+                    this.multiplierPrice.perClick *= PRICE_INCREASE;
+                }
+                else {
+                    this.upgrades.clicksPerSecond += count;
+                    this.multiplierPrice.perSec *= PRICE_INCREASE;
+                }
                 this.showPrices();
                 this.renderUpgrades();
                 setDataToLocalStorage(LocalStorage.upgrades, this.upgrades);
-                setDataToLocalStorage(LocalStorage.multipliers, {
-                    multiplierPricePerClick: Math.floor(this.multiplierPricePerClick),
-                    multiplierPricePerSec: Math.floor(this.multiplierPricePerSec),
+                setDataToLocalStorage(LocalStorage.multiplierPrice, {
+                    multiplierPricePerClick: Math.floor(this.multiplierPrice.perClick),
+                    multiplierPricePerSec: Math.floor(this.multiplierPrice.perSec),
                 });
             }
             else {
@@ -69,8 +114,14 @@ class Upgrades {
             getElementBySelector('#counterPerClick').textContent = String(this.upgrades.clickSize);
             getElementBySelector('#counterPerSec').textContent = String(this.upgrades.clicksPerSecond);
         };
-        this.decreasePrice = decreasePrice;
+        this.setMultiplierPriceFromLS = () => {
+            const dataFromLS = getDataFromLocalStorage(LocalStorage.multiplierPrice);
+            if (dataFromLS) {
+                this.multiplierPrice.perClick = dataFromLS.multiplierPricePerClick;
+                this.multiplierPrice.perSec = dataFromLS.multiplierPricePerSec;
+            }
+            // const { multPricePerClick, multPricePerSec } =
+        };
         this.upgrades = upgrades;
-        this.getClicks = getClicks;
     }
 }
