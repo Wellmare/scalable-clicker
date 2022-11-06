@@ -13,6 +13,6 @@ enum LocalStorage {
     upgrades = 'upgrades',
 }
 
-const getElementBySelector = (selector: string) => {
-    return document.querySelector(selector) as HTMLElement
+const getElementBySelector = <T extends HTMLElement>(selector: string) => {
+    return document.querySelector(selector) as T
 }

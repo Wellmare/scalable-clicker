@@ -49,7 +49,7 @@ class Upgrades {
             selector: string,
             funcOnClick: () => void
         ): void => {
-            getElementBySelector(`${selector} button`).addEventListener(
+            getElementBySelector<HTMLButtonElement>(`${selector} button`).addEventListener(
                 'click',
                 funcOnClick
             )
@@ -66,7 +66,7 @@ class Upgrades {
 
     private showPrices = () => {
         const showPrice = (selector: string, price: number) => {
-            getElementBySelector(`${selector} .price`).textContent = String(
+            getElementBySelector<HTMLParagraphElement>(`${selector} .price`).textContent = String(
                 Math.floor(price)
             )
         }
@@ -166,10 +166,10 @@ class Upgrades {
     }
 
     private renderUpgrades = () => {
-        getElementBySelector('#counterPerClick').textContent = String(
+        getElementBySelector<HTMLSpanElement>('#counterPerClick').textContent = String(
             this.upgrades.clickSize
         )
-        getElementBySelector('#counterPerSec').textContent = String(
+        getElementBySelector<HTMLSpanElement>('#counterPerSec').textContent = String(
             this.upgrades.clicksPerSecond
         )
     }

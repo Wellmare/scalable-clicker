@@ -6,7 +6,7 @@ enum themes {
 class Theme {
     private currentTheme: themes = themes.light
 
-    constructor(private themingChangeElement: HTMLElement) {
+    constructor(private themingChangeElement: HTMLImageElement) {
         this.start()
     }
 

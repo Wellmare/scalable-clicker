@@ -5,7 +5,7 @@ class Clicker {
         clicksPerSecond: 0,
     }
 
-    constructor(public counter: HTMLElement, public button: HTMLElement) {}
+    constructor(public counter: HTMLSpanElement, public button: HTMLButtonElement) {}
 
     public startGame = (): void => {
         this.returnSetting()
@@ -15,7 +15,7 @@ class Clicker {
             this.addCount()
         })
 
-        new Theme(getElementBySelector('#theme'))
+        new Theme(getElementBySelector<HTMLImageElement>('#theme'))
         new Upgrades(this.decreasePrice, this.getClicks, this.upgrades).start()
 
         // enum typesUpgrades {
