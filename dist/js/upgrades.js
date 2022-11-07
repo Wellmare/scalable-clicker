@@ -1,14 +1,8 @@
 "use strict";
-var selectors;
-(function (selectors) {
-    selectors["perSec"] = "#per-sec";
-    selectors["perClick"] = "#per-click";
-})(selectors || (selectors = {}));
-var typesUpgrades;
-(function (typesUpgrades) {
-    typesUpgrades["perClick"] = "perClick";
-    typesUpgrades["perSec"] = "perSec";
-})(typesUpgrades || (typesUpgrades = {}));
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Upgrades = void 0;
+const types_1 = require("./types");
+const utils_1 = require("./utils");
 const PRICE_INCREASE = 1.75;
 const defaultPrices = {
     perClick: 10,
@@ -26,18 +20,18 @@ class Upgrades {
             this.setMultiplierPriceFromLS();
             this.showPrices();
             const listenEventButton = (selector, funcOnClick) => {
-                getElementBySelector(`${selector} button`).addEventListener('click', funcOnClick);
+                (0, utils_1.getElementBySelector)(`${selector} button`).addEventListener('click', funcOnClick);
             };
-            listenEventButton(selectors.perClick, () => this.upgrade(typesUpgrades.perClick, 1));
-            listenEventButton(selectors.perSec, () => this.upgrade(typesUpgrades.perSec, 1));
+            listenEventButton(types_1.Selectors.PER_CLICK, () => this.upgrade(types_1.TypesUpgrades.PER_CLICK, 1));
+            listenEventButton(types_1.Selectors.PER_SEC, () => this.upgrade(types_1.TypesUpgrades.PER_SEC, 1));
             this.renderUpgrades();
         };
         this.showPrices = () => {
             const showPrice = (selector, price) => {
-                getElementBySelector(`${selector} .price`).textContent = String(Math.floor(price));
+                (0, utils_1.getElementBySelector)(`${selector} .price`).textContent = String(Math.floor(price));
             };
-            showPrice(selectors.perClick, defaultPrices.perClick * this.multiplierPrice.perClick);
-            showPrice(selectors.perSec, defaultPrices.perSec * this.multiplierPrice.perSec);
+            showPrice(types_1.Selectors.PER_CLICK, defaultPrices.perClick * this.multiplierPrice.perClick);
+            showPrice(types_1.Selectors.PER_SEC, defaultPrices.perSec * this.multiplierPrice.perSec);
         };
         // private upgradeClickSize = (count: number = 1) => {
         //     const totalPrice: number = Math.floor(
@@ -85,12 +79,12 @@ class Upgrades {
         //     }
         // }
         this.upgrade = (type, count) => {
-            const totalPrice = Math.floor(type === typesUpgrades.perClick
+            const totalPrice = Math.floor(type === types_1.TypesUpgrades.PER_CLICK
                 ? defaultPrices.perClick * this.multiplierPrice.perClick
                 : defaultPrices.perSec * this.multiplierPrice.perSec);
             if (this.getClicks() >= totalPrice) {
                 this.decreasePrice(totalPrice);
-                if (type === typesUpgrades.perClick) {
+                if (type === types_1.TypesUpgrades.PER_CLICK) {
                     this.upgrades.clickSize += count;
                     this.multiplierPrice.perClick *= PRICE_INCREASE;
                 }
@@ -100,8 +94,8 @@ class Upgrades {
                 }
                 this.showPrices();
                 this.renderUpgrades();
-                setDataToLocalStorage(LocalStorage.upgrades, this.upgrades);
-                setDataToLocalStorage(LocalStorage.multiplierPrice, {
+                (0, utils_1.setDataToLocalStorage)(utils_1.LocalStorage.UPGRADES, this.upgrades);
+                (0, utils_1.setDataToLocalStorage)(utils_1.LocalStorage.MULTIPLIER_PRICE, {
                     multiplierPricePerClick: Math.floor(this.multiplierPrice.perClick),
                     multiplierPricePerSec: Math.floor(this.multiplierPrice.perSec),
                 });
@@ -111,11 +105,13 @@ class Upgrades {
             }
         };
         this.renderUpgrades = () => {
-            getElementBySelector('#counterPerClick').textContent = String(this.upgrades.clickSize);
-            getElementBySelector('#counterPerSec').textContent = String(this.upgrades.clicksPerSecond);
+            (0, utils_1.getElementBySelector)('#counterPerClick').textContent =
+                String(this.upgrades.clickSize);
+            (0, utils_1.getElementBySelector)('#counterPerSec').textContent =
+                String(this.upgrades.clicksPerSecond);
         };
         this.setMultiplierPriceFromLS = () => {
-            const dataFromLS = getDataFromLocalStorage(LocalStorage.multiplierPrice);
+            const dataFromLS = (0, utils_1.getDataFromLocalStorage)(utils_1.LocalStorage.MULTIPLIER_PRICE);
             if (dataFromLS) {
                 this.multiplierPrice.perClick = dataFromLS.multiplierPricePerClick;
                 this.multiplierPrice.perSec = dataFromLS.multiplierPricePerSec;
@@ -125,3 +121,4 @@ class Upgrades {
         this.upgrades = upgrades;
     }
 }
+exports.Upgrades = Upgrades;
