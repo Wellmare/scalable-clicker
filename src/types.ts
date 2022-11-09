@@ -26,3 +26,12 @@ export enum themes {
     DARK = 'dark',
     LIGHT = 'light',
 }
+
+// LocalStorage
+
+export enum LocalStorage {
+    CLICKS = 'clicks',
+    THEME = 'theme',
+    MULTIPLIER_PRICE = 'multiplierPrice',
+    UPGRADES = 'upgrades',
+}

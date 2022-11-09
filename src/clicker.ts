@@ -1,11 +1,10 @@
 import { Theme } from './theme'
-import { IUpgrades } from './types'
+import { IUpgrades, LocalStorage } from './types'
 import { Upgrades } from './upgrades'
 import {
     getDataFromLocalStorage,
     getElementBySelector,
-    LocalStorage,
-    setDataToLocalStorage
+    setDataToLocalStorage,
 } from './utils'
 
 class Clicker {
@@ -65,4 +64,3 @@ class Clicker {
 }
 
 export { Clicker }
-

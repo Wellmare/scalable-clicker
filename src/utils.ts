@@ -6,13 +6,6 @@ export const setDataToLocalStorage = (key: string, value: any): void => {
     localStorage.setItem(key, JSON.stringify(value))
 }
 
-export enum LocalStorage {
-    CLICKS = 'clicks',
-    THEME = 'theme',
-    MULTIPLIER_PRICE = 'multiplierPrice',
-    UPGRADES = 'upgrades',
-}
-
 export const getElementBySelector = <T extends HTMLElement>(
     selector: string
 ): T => {

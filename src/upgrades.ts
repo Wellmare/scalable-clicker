@@ -1,8 +1,13 @@
-import { IUpgrades, IMultiplierPrices, Selectors, TypesUpgrades } from './types'
+import {
+    IMultiplierPrices,
+    IUpgrades,
+    LocalStorage,
+    Selectors,
+    TypesUpgrades,
+} from './types'
 import {
     getDataFromLocalStorage,
     getElementBySelector,
-    LocalStorage,
     setDataToLocalStorage,
 } from './utils'
 
